@@ -1,0 +1,137 @@
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+typedef pair<int, int> pii;  // Pair of (distance, vertex)
+
+class Solution {
+public:
+    vector<int> dijkstra(int n, vector<vector<pii>>& graph, int start) {
+        vector<int> dist(n, INT_MAX);  // Distance from start to each node
+        dist[start] = 0;
+
+        priority_queue<pii, vector<pii>, greater<pii>> pq;  // Min-heap priority queue
+        pq.push({0, start});
+
+        while (!pq.empty()) {
+            int node = pq.top().second;
+            int d = pq.top().first;
+            pq.pop();
+
+            // Skip if we already found a shorter path
+            if (d > dist[node]) continue;
+
+            // Explore neighbors
+            for (auto& neighbor : graph[node]) {
+                int neighbor_node = neighbor.first;
+                int weight = neighbor.second;
+                
+                // Relax the edge
+                if (dist[node] + weight < dist[neighbor_node]) {
+                    dist[neighbor_node] = dist[node] + weight;
+                    pq.push({dist[neighbor_node], neighbor_node});
+                }
+            }
+        }
+        
+        return dist;
+    }
+};
+
+int main() {
+    int n = 5;
+    vector<vector<pii>> graph(n);
+
+    // Graph representation (adjacency list) where graph[u] = { {v, weight}, ... }
+    graph[0].push_back({1, 10});
+    graph[0].push_back({4, 5});
+    graph[1].push_back({2, 1});
+    graph[2].push_back({3, 4});
+    graph[3].push_back({0, 7});
+    graph[4].push_back({1, 3});
+    graph[4].push_back({2, 9});
+    
+    Solution sol;
+    vector<int> dist = sol.dijkstra(n, graph, 0);
+
+    for (int i = 0; i < n; ++i) {
+        cout << "Distance from 0 to " << i << " is " << dist[i] << endl;
+    }
+
+    return 0;
+}
+**************************************************************For 2d****************************************
+#include <iostream>
+#include <vector>
+#include <queue>
+#include <climits>
+
+using namespace std;
+
+typedef pair<int, pair<int, int>> pii;  // (distance, (x, y))
+
+class Solution {
+public:
+    vector<vector<int>> dijkstra(int rows, int cols, vector<vector<int>>& grid, pair<int, int> start) {
+        vector<vector<int>> dist(rows, vector<int>(cols, INT_MAX));  // Distance grid
+        dist[start.first][start.second] = grid[start.first][start.second];
+
+        priority_queue<pii, vector<pii>, greater<pii>> pq;  // Min-heap priority queue
+        pq.push({grid[start.first][start.second], {start.first, start.second}});
+
+        // Directions (right, left, down, up)
+        vector<pair<int, int>> directions = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+
+        while (!pq.empty()) {
+            int d = pq.top().first;
+            int x = pq.top().second.first;
+            int y = pq.top().second.second;
+            pq.pop();
+
+            // Skip if this path is not optimal anymore
+            if (d > dist[x][y]) continue;
+
+            // Explore neighbors
+            for (auto& dir : directions) {
+                int nx = x + dir.first;
+                int ny = y + dir.second;
+
+                if (nx >= 0 && nx < rows && ny >= 0 && ny < cols) {
+                    int newDist = dist[x][y] + grid[nx][ny];
+
+                    // Relax the edge if a shorter path is found
+                    if (newDist < dist[nx][ny]) {
+                        dist[nx][ny] = newDist;
+                        pq.push({newDist, {nx, ny}});
+                    }
+                }
+            }
+        }
+
+        return dist;
+    }
+};
+
+int main() {
+    int rows = 3, cols = 3;
+    vector<vector<int>> grid = {
+        {1, 3, 1},
+        {1, 5, 1},
+        {4, 2, 1}
+    };
+
+    Solution sol;
+    vector<vector<int>> dist = sol.dijkstra(rows, cols, grid, {0, 0});
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            cout << dist[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}

@@ -1,0 +1,45 @@
+// same logic of tracking parent and if a cell not visisted ->(call dfs)return true;
+// else if -> and neigbour!=parent
+
+#include<bits/stdc++.h>
+using namespace std;
+bool dfs(int node,unordered_map<int,list<int>>&g,int parent,vector<bool>&vis){
+    vis[node]=true;
+    for (int neighbor : g[node]) {
+        if (!vis[neighbor]) {
+            if (dfs(neighbor,g,node,vis)) return true;
+        }
+        else if (neighbor != parent) {
+            // A back edge found, meaning a cycle exists
+            return true;
+        }
+    }
+    
+    return false;
+}
+int main(){
+    int n,m;
+    cin>>n>>m;
+    unordered_map<int,list<int>>g;
+    for(int i=0;i<m;i++){
+        int u,v;
+        cin>>u>>v;
+         g[u].push_back(v);
+        g[v].push_back(u);
+    }
+    //cycle detcetion function 
+    bool has=false;
+    vector<bool>vis(n,false);
+    for(int i=0;i<m;i++){
+        if(!vis[i]){
+            if(dfs(i,g,-1,vis)){
+                has=true;
+                break;
+            }
+        }
+    }
+    if(has==true)cout<<"cycle detected"<<endl;
+    else{
+        cout<<" no cycle detected"<<endl;
+    }
+}

@@ -1,0 +1,23 @@
+Algorithm
+
+Time Complexity
+
+Explanation
+
+DFS
+
+O(V + E)
+
+Visits every node once and every edge once
+
+BFS
+
+O(V + E)
+
+Every node and edge is processed once in the queue
+
+****************************************DSU****************************************
+Time Complexity for Cycle Detection using DSU: O(E * α(V)), where:
+E = number of edges
+V = number of vertices
+α(V) ≈ O(1) for all practical purposes

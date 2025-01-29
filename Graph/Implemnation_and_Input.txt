@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+     int n, m;
+    cin >> n >> m;
+
+    unordered_map<int, list<int>> g;
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    for (auto& [node, neighbors] : g) {//c++ 17 support this
+        cout << node << " -> ";
+        for (int neighbor : neighbors) {
+            cout << neighbor << ", ";
+        }
+        cout << endl;
+    }
+}

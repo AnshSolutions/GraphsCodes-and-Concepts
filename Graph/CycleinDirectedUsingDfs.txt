@@ -1,0 +1,55 @@
+//just change is that in dfs we are using a inrecursion boolean vector and we dont use parent here we chack 
+//with inRecursion[i]
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to detect cycle in a directed graph using DFS
+bool isCycleDFS(int u, unordered_map<int, list<int>>& g, vector<bool>& visited, vector<bool>& inRecursion) {
+    visited[u] = true;
+    inRecursion[u] = true;
+
+    for (int v : g[u]) {
+        if (!visited[v] && isCycleDFS(v, g, visited, inRecursion))
+            return true;
+        else if (inRecursion[v])
+            return true;
+    }
+
+    inRecursion[u] = false;
+    return false;
+}
+
+// Function to check cycle in the entire graph (handling disconnected components)
+bool hasCycle(int n, unordered_map<int, list<int>>& g) {
+    vector<bool> visited(n + 1, false);
+    vector<bool> inRecursion(n + 1, false);
+
+    for (auto& [node, _] : g) { // Iterate over all nodes in the graph
+        if (!visited[node]) {
+            if (isCycleDFS(node, g, visited, inRecursion))
+                return true;
+        }
+    }
+    return false;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    unordered_map<int, list<int>> g;
+
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);  // Directed edge u → v
+    }
+
+    if (hasCycle(n, g))
+        cout << "Cycle detected!" << endl;
+    else
+        cout << "No cycle detected." << endl;
+
+    return 0;
+}

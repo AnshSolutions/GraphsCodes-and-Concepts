@@ -1,0 +1,50 @@
+#include<bits/stdc++.h>
+using namespace std;
+class DSU {
+private:
+     vector<int> parent;
+    vector<int> rank;
+    
+    int find(int x) {
+        if(parent[x] == x)
+            return x;
+        
+        return parent[x] = find(parent[x]);
+    }
+    
+    void Union(int x, int y) {
+        int x_parent = find(x);
+        int y_parent = find(y);
+ 
+    
+        if(rank[x_parent] > rank[y_parent]) {
+            parent[y_parent] = x_parent;
+        } else if(rank[x_parent] < rank[y_parent]) {
+            parent[x_parent] = y_parent;
+        } else {
+            parent[x_parent] = y_parent;
+            rank[y_parent]++;
+        }
+    }
+    
+
+    // Check if two elements are in the same set
+    bool isConnected(int x, int y) {
+        return find(x) == find(y);  // If they have the same root, they're connected
+    }
+};
+
+int main() {
+    DSU dsu(5);  // Initialize DSU for 5 elements: 0, 1, 2, 3, 4
+
+    // Union some sets
+    dsu. Union(0, 1);
+    dsu. Union(1, 2);
+    dsu. Union(3, 4);
+
+    // Check if two elements are connected
+    cout << dsu.isConnected(0, 2) << endl;  // Should return true (1)
+    cout << dsu.isConnected(0, 3) << endl;  // Should return false (0)
+    
+    return 0;
+}

@@ -1,0 +1,62 @@
+//logic is same but here we store parent in queue ,rest is ame 
+#include <bits/stdc++.h>
+using namespace std;
+
+// BFS function to detect cycle in an undirected graph
+bool bfs(int start, unordered_map<int, list<int>> &g, vector<bool> &vis) {
+    queue<pair<int, int>> q; // Stores (node, parent)
+    vis[start] = true;
+    q.push({start, -1});
+
+    while (!q.empty()) {
+        int node = q.front().first;
+        int parent = q.front().second;
+        q.pop();
+
+        for (int neighbor : g[node]) {
+            if (!vis[neighbor]) {
+                vis[neighbor] = true;
+                q.push({neighbor, node});
+            }
+            else if (neighbor != parent) {
+                // If visited and not the parent, cycle exists
+                return true;
+            }
+        }
+    }
+    
+    return false;
+}
+
+int main() {
+    int n, m;
+    cin >> n >> m;
+
+    unordered_map<int, list<int>> g;
+
+    // Taking edge input
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        g[u].push_back(v);
+        g[v].push_back(u);
+    }
+
+    // Cycle detection
+    vector<bool> vis(n + 1, false);
+    bool hasCycle = false;
+
+    for (int i = 1; i <= n; i++) { // Start from 1-based index (if nodes start from 1)
+        if (!vis[i]) {
+            if (bfs(i, g, vis)) {
+                hasCycle = true;
+                break;
+            }
+        }
+    }
+
+    if (hasCycle) cout << "Cycle detected!" << endl;
+    else cout << "No cycle detected." << endl;
+
+    return 0;
+}
