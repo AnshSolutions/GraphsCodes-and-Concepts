@@ -47,6 +47,18 @@ public:
         }
         return pCrawl->c;
     }
+    bool searchPrefix(string prefix) {
+        trieNode* pCrawl = root;
+        for (int i = 0; i < prefix.length(); i++) {
+            int idx = prefix[i] - 'a';
+            if (pCrawl->children[idx] == NULL) {
+                return false;
+            }
+            pCrawl = pCrawl->children[idx];
+        }
+
+        return true;
+    }
 };
 
 int main() {
